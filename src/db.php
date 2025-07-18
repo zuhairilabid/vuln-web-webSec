@@ -30,7 +30,7 @@ $result = mysqli_query($conn, "SELECT COUNT(*) FROM users");
 $row = mysqli_fetch_array($result);
 
 if ($row[0] == 0) {
-    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('adminberjaya', '2<F}x882')");
-    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('diozahwan', '2<F;@>@<')");
-    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('ucup', '2<F;F82;@>@<')");
+    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('admin', '1avc4ffj0eq4qzva')");
+    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('diozahwan', 'nxhqu1bm4uj4a')");
+    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('ucup', '1av4xhahphcl4x')");
 }
