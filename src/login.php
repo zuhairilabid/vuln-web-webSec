@@ -1,95 +1,83 @@
-    <?php
+<?php
+session_start();
 
-    session_start();
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: dashboard.php");
+    exit;
+}
 
-    require_once 'db.php'; 
+require_once 'db.php'; 
 
-    $username = $password = "";
-    $username_rr = $password_rr = $loginrr = "";
+$username = $password = "";
+$loginrr = ""; 
 
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
+if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-        if(empty(trim($_POST["username"]))){
-            $username_rr = "Please enter username.";
-        } else{
-            $username = $_POST["username"];
-        }
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-        if(empty(trim($_POST["password"]))){
-            $password_rr = "Please enter your password.";
-        } else{
-            $password = $_POST["password"];
-        }
+    if(empty($username) || empty($password)){
+        $loginrr = "Invalid credentials.";
+    } else {
+        $query = "SELECT id, username FROM users WHERE username = '$username' AND password = '$password'";
+        
+        $result = mysqli_query($conn, $query);
 
-        if(empty($username_rr) && empty($password_rr)){
-            $query = "SELECT id FROM users WHERE username = '$username' AND password = '$password'";
-            echo "<pre>$query</pre>"; 
-            $result = mysqli_query($conn, $query);
+        if ($result && mysqli_num_rows($result) > 0) {
+            
+            $user = mysqli_fetch_assoc($result);
 
-            if ($result && mysqli_num_rows($result) >= 1) {
-                session_start();
-                $_SESSION['loggedin'] = true;
-                $_SESSION['username'] = $username;
-                
-                header("location: dashboard.php");
-                exit();
-            } else {
-                $loginrr = "Login gagal, coba lagi bro.";
-            }
+            $_SESSION['loggedin'] = true;
+            $_SESSION['username'] = $user['username']; 
+            
+            header("location: dashboard.php");
+            exit();
+        } else {
+            $loginrr = "Invalid credentials.";
         }
     }
-    ?>
+}
+?>
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login - Cyber Course Shop</title>
-        <link rel="stylesheet" href="/public/style/style.css">
-    </head>
-    <body>
-        <div class="login-container">
-            <div class="login-box">
-                <h2>Welcome, Hacker!</h2>
-                <p>Login to start your challenge</p>
-                
-                <?php 
-                if(!empty($loginrr)){
-                    echo '<div style="color: red; margin-bottom: 10px;">' . $loginrr . '</div>';
-                }        
-                ?>
-                
-                <form action="login.php" method="POST">
-                    <div class="input-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username">
-                        
-                        <?php 
-                        if(!empty($username_rr)){
-                            echo '<div style="color: red; font-size: 0.8em;">' . $username_rr . '</div>';
-                        }
-                        ?>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Cyber Course Shop</title>
+    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-page-container">
+        <div class="login-box">
+            <h2 class="login-title">CyberCourse</h2>
+            <p class="login-subtitle">Welcome, Hacker! Authenticate to begin.</p>
+            
+            <?php if(!empty($loginrr)): ?>
+                <div class="form-message-error"><?php echo $loginrr; ?></div>
+            <?php endif; ?>
 
-                        <?php 
-                        if(!empty($password_rr)){
-                            echo '<div style="color: red; font-size: 0.8em;">' . $password_rr . '</div>';
-                        }
-                        ?>
-                    </div>
-                    
-                    <button type="submit" class="btn">Login</button>
-                </form>
-            </div>
+            <form action="login.php" method="POST" novalidate>
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>">
+                    <?php if(!empty($username_rr)): ?>
+                        <div class="form-message-error-small"><?php echo $username_rr; ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password">
+                    <?php if(!empty($password_rr)): ?>
+                         <div class="form-message-error-small"><?php echo $password_rr; ?></div>
+                    <?php endif; ?>
+                </div>
+                <button type="submit" class="btn btn-full">Login</button>
+            </form>
         </div>
-    </body>
-    </html>
-
-    <?php   
-    mysqli_close($conn);
-    ?>
+    </div>
+</body>
+</html>
