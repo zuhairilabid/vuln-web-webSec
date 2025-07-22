@@ -25,11 +25,26 @@ body {
     font-family: var(--font-mono);
     background-color: var(--dark-navy);
     color: var(--slate);
+    overflow-x: hidden;
 }
 
 a {
     text-decoration: none;
     color: var(--accent-blue);
+}
+
+.admin-flag {
+    background-color: var(--lightest-navy); 
+    color: var(--accent-blue); 
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin: 20px 0; 
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    border: 1px dashed var(--accent-blue); 
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 /* --- Login Page Styles --- */
@@ -212,10 +227,25 @@ a {
     color: var(--light-slate);
     font-size: 16px;
     transition: color 0.2s;
+    position: relative;
+    overflow: hidden;
 }
 
 .sidebar-nav a:hover {
     color: var(--accent-blue);
+    background-color: rgba(100, 255, 218, 0.05);
+}
+
+.sidebar-nav a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px; 
+    background-color: var(--accent-blue);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-in-out;
 }
 
 .sidebar-header {
@@ -244,9 +274,25 @@ a {
 }
 
 /* --- Main Content --- */
+.main-wrapper { 
+    display: flex;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.main-wrapper.sidebar-active { 
+    margin-left: 250px;
+}
+
+
 .main-content {
     padding-top: var(--header-height);
     transition: filter 0.3s ease-in-out;
+    padding-left: 25px;
+}
+
+.main-content.sidebar-blurred {
+    filter: blur(2px);
+    pointer-events: none;
 }
 
 .container {
@@ -255,21 +301,22 @@ a {
     margin: 0 auto;
 }
 
+.container p { 
+    margin-bottom: 40px; 
+    max-width: 600px;
+    line-height: 1.6; 
+}
+
 .container h1 {
     color: var(--white);
     margin-bottom: 10px;
 }
 
-.container p {
-    margin-bottom: 40px;
-    max-width: 600px;
-}
-
-/* --- Course Grid --- */
 .course-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 25px;
+    padding-top: 20px; 
 }
 
 .course-card {
@@ -320,15 +367,166 @@ a {
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .course-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
     .course-grid {
         grid-template-columns: 1fr;
+        padding: 0 15px; 
     }
-    .profile span {
-        display: none;
+    .container {
+        padding: 20px 15px;
     }
+}
+
+/* --- Support Page & Modal Styles --- */
+
+/* Styling untuk halaman support */
+.support-section {
+    padding: 20px;
+    background-color: var(--light-navy); 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+    color: var(--lightest-slate); 
+}
+
+.support-section h2 {
+    color: var(--accent-blue); 
+    margin-bottom: 15px;
+}
+
+.support-section p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.faq-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--dark-navy); 
+    border-left: 5px solid var(--accent-blue);
+    border-radius: 4px;
+}
+
+.faq-item h3 {
+    color: var(--white); 
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.faq-item p {
+    color: var(--slate);
+}
+
+.support-contact-info {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.support-contact-info li {
+    margin-bottom: 10px;
+}
+
+.support-contact-info li strong {
+    color: var(--accent-blue); 
+}
+
+.contact-button {
+    background-color: var(--accent-blue); 
+    color: var(--dark-navy); 
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 17px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 700; 
+}
+
+.contact-button:hover {
+    background-color: transparent; 
+    color: var(--accent-blue);
+}
+
+/* Modal full screen */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal box */
+.modal-content {
+    background-color: #fff;
+    color: #333;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    animation: pop 0.3s ease-in-out;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    position: relative;
+}
+
+/* Animation */
+@keyframes pop {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ff5e5e;
+}
+
+/* Form input */
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    resize: none;
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* Kirim button */
+.modal-content button[type="submit"] {
+    margin-top: 1rem;
+    background-color: #ff477e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #e03e71;
 }

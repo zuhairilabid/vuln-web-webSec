@@ -11,7 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Course Shop - Dashboard</title>
-    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="stylesheet" href="../public/style/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -27,6 +27,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             <a href="#">My Courses</a>
             <a href="#">My Profile</a>
             <a href="#">Settings</a>
+            <a href="support.php">Support</a>
             <a href="logout.php">Logout</a>
         </nav>
     </aside>
