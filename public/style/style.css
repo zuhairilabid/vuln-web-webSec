@@ -33,20 +33,6 @@ a {
     color: var(--accent-blue);
 }
 
-.admin-flag {
-    background-color: var(--lightest-navy); 
-    color: var(--accent-blue); 
-    padding: 15px 20px;
-    border-radius: 5px;
-    margin: 20px 0; 
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    border: 1px dashed var(--accent-blue); 
-    letter-spacing: 1px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
 /* --- Login Page Styles --- */
 .login-page-container {
     display: flex;
@@ -453,80 +439,100 @@ a {
     color: var(--accent-blue);
 }
 
-/* Modal full screen */
+.send-button {
+    background-color: var(--accent-blue); 
+    color: var(--dark-navy); 
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 17px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 700; 
+}
+
+.send-button:hover {
+    background-color: transparent; 
+    color: var(--accent-blue);
+}
+
 .modal {
     display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
-    width: 100vw;
-    height: 100vh;
-    backdrop-filter: blur(6px);
-    background-color: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 25, 47, 0.7); /* Pake warna tema + transparan */
+    backdrop-filter: blur(5px);
+    display: none; /* diubah oleh JS jadi flex */
     justify-content: center;
     align-items: center;
 }
 
-/* Modal box */
 .modal-content {
-    background-color: #fff;
-    color: #333;
-    padding: 2rem;
-    border-radius: 20px;
-    width: 400px;
+    background-color: var(--light-navy); /* Pake warna tema */
+    color: var(--light-slate); /* Pake warna tema */
+    padding: 30px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 500px;
     text-align: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    animation: pop 0.3s ease-in-out;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border: 1px solid var(--lightest-navy);
+    font-family: var(--font-mono); /* Pake font tema */
     position: relative;
+    animation: pop 0.3s ease-out;
 }
 
-/* Animation */
 @keyframes pop {
-    0% {
-        transform: scale(0.7);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
-/* Close Button */
-.close-button {
+.modal-content h2 {
+    color: var(--white);
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    margin-bottom: 25px;
+    color: var(--slate);
+}
+
+.modal-content .close-button {
     position: absolute;
     top: 10px;
-    right: 20px;
-    font-size: 1.5rem;
+    right: 15px;
+    font-size: 28px;
+    font-weight: 700;
     cursor: pointer;
-    color: #ff5e5e;
+    color: var(--slate);
+    transition: color 0.2s;
 }
 
-/* Form input */
+.modal-content .close-button:hover {
+    color: var(--accent-blue);
+}
+
 .modal-content textarea {
     width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    resize: none;
-    font-family: 'Roboto Mono', monospace;
+    padding: 12px;
+    background-color: var(--dark-navy);
+    border: 1px solid var(--lightest-navy);
+    border-radius: 4px;
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    resize: vertical;
+    min-height: 120px;
+    margin-bottom: 20px;
 }
 
-/* Kirim button */
-.modal-content button[type="submit"] {
-    margin-top: 1rem;
-    background-color: #ff477e;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
+.modal-content textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1);
 }
 
-.modal-content button[type="submit"]:hover {
-    background-color: #e03e71;
-}

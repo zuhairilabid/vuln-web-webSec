@@ -60,7 +60,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     ?>
                         <div class="flag-box">
                             <p class="flag-title">-- ADMIN FLAG UNLOCKED --</p>
-                            <p class="flag-content">FLAG{Adm1n_P4n3l_4cc3ss_G41n3d_V14_SQLi}</p>
+                            <p class="flag-content">WebSec{g00k1LLL_#r4j4_SQLi_t3l4h#_d4t4n99999!!!}</p>
                         </div>
                 <?php endif; ?>
             <div class="course-grid">

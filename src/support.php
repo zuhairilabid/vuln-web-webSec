@@ -93,14 +93,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         </div>
     </main>
 
-    <div id="giveFeedbackModal" class="modal">
+    <div id="giveFeedbackModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close-button" id="closeGiveFeedbackModal">&times;</span>
-        <h2>😜 Berikan Kami Masukan atau Report 😜</h2>
-        <p>Halo, <?php echo htmlspecialchars($_SESSION['username']); ?>! Kami butuh pendapatmu 😹</p>
+        <h2>Hello,<?php echo htmlspecialchars($_SESSION['username']); ?>! Give us feedback or report</h2>
+        <p></p>
         <form id="feedbackForm" action="submit_feedback.php" method="POST">
             <textarea id="feedback_message" name="message" rows="5" required placeholder="Tulis pesan di sini..."></textarea>
-            <button type="submit">🚀 Kirim</button>
+            <button type="submit" class="send-button">Send!</button>
         </form>
     </div>
 </div>
