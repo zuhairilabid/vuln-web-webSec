@@ -19,19 +19,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($username) || empty($password)){
         $loginrr = "Invalid credentials.";
     } else {
-        $query = "SELECT id, username FROM users WHERE username = '$username' AND password = '$password'";
-        
-        $result = mysqli_query($conn, $query);
+        $sql_user_check = "SELECT * FROM users WHERE username = '$username'";
+        $result_user_check = mysqli_query($conn, $sql_user_check);
 
-        if ($result && mysqli_num_rows($result) > 0) {
+        if ($result_user_check && mysqli_num_rows($result_user_check) == 1) {
             
-            $user = mysqli_fetch_assoc($result);
+            $user = mysqli_fetch_assoc($result_user_check);
+            
+            $sql_pass_check = "SELECT id FROM users WHERE username = '$username' AND password = '$password'";
+            $result_pass_check = mysqli_query($conn, $sql_pass_check);
+            
+            if ($result_pass_check && mysqli_num_rows($result_pass_check) > 0) {
+                
+                $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $user['username']; 
+                
+                header("location: dashboard.php");
+                exit();
 
-            $_SESSION['loggedin'] = true;
-            $_SESSION['username'] = $user['username']; 
-            
-            header("location: dashboard.php");
-            exit();
+            } else {
+                $loginrr = "Invalid credentials.";
+            }
+
         } else {
             $loginrr = "Invalid credentials.";
         }

@@ -1,4 +1,15 @@
 <?php
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'vul_db');
+
+$conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+if($conn === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
+}
+
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
@@ -43,7 +54,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         </div>
         <div class="header-right">
             <div class="profile">
-                <span>Welcome, <?php echo $_SESSION['username']; ?>!</span>
+                <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</span>
                 <div class="profile-icon">
                     <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
                 </div>
@@ -57,43 +68,30 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             <p>Start your journey into cybersecurity with our expert-led courses.</p>
                 <?php
                     if (isset($_SESSION['username']) && $_SESSION['username'] === 'admin'):
-                    ?>
-                        <div class="flag-box">
-                            <p class="flag-title">-- ADMIN FLAG UNLOCKED --</p>
-                            <p class="flag-content">WebSec{g00k1LLL_#r4j4_SQLi_t3l4h#_d4t4n99999!!!}</p>
-                        </div>
+                ?>
+                    <div class="flag-box">
+                        <p class="flag-title">-- ADMIN FLAG UNLOCKED --</p>
+                        <p class="flag-content">WebSec{g00k1LLL_#r4j4_SQLi_t3l4h#_d4t4n99999!!!}</p>
+                    </div>
                 <?php endif; ?>
+            
             <div class="course-grid">
-                <div class="course-card">
-                    <div class="card-header">SQL Injection Mastery</div>
-                    <div class="card-body">Learn to find and exploit SQLi vulnerabilities from scratch.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
-                <div class="course-card">
-                    <div class="card-header">XSS for Pentesters</div>
-                    <div class="card-body">Master the art of Cross-Site Scripting in modern web apps.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
-                <div class="course-card">
-                    <div class="card-header">Intro to Reverse Engineering</div>
-                    <div class="card-body">Disassemble and understand malware and software.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
-                <div class="course-card">
-                    <div class="card-header">Binary Exploitation</div>
-                    <div class="card-body">Dive deep into buffer overflows and memory corruption.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
-                <div class="course-card">
-                    <div class="card-header">Web Security Fundamentals</div>
-                    <div class="card-body">A complete overview of common web vulnerabilities.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
-                <div class="course-card">
-                    <div class="card-header">Active Directory Hacking</div>
-                    <div class="card-body">Learn techniques to compromise enterprise networks.</div>
-                    <div class="card-footer"><a href="#" class="btn">View Course</a></div>
-                </div>
+                <?php
+                $sql = "SELECT title, description, link FROM courses";
+                $result = mysqli_query($conn, $sql);
+
+                if (mysqli_num_rows($result) > 0) {
+                    while($row = mysqli_fetch_assoc($result)) {
+                        echo '<div class="course-card">';
+                        echo '    <div class="card-header">' . htmlspecialchars($row["title"]) . '</div>';
+                        echo '    <div class="card-body">' . htmlspecialchars($row["description"]) . '</div>';
+                        echo '    <div class="card-footer"><a href="' . htmlspecialchars($row["link"]) . '" class="btn">View Course</a></div>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo "<p>Belum ada course yang tersedia saat ini.</p>";
+                }
+                ?>
             </div>
         </div>
     </main>
@@ -117,3 +115,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 </body>
 </html>
+<?php
+// Tutup koneksi database
+mysqli_close($conn);
+?>
