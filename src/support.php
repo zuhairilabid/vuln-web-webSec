@@ -56,14 +56,19 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             <h1>Support Center</h1>
             <p>We're here to help you with any questions or issues you might have.</p>
 
-            <?php
-            if (isset($_SESSION['feedback_message'])) {
-                $message_class = ($_SESSION['feedback_type'] == 'success') ? 'success-message' : 'error-message';
-                echo '<div class="' . $message_class . '">' . htmlspecialchars($_SESSION['feedback_message']) . '</div>';
-                unset($_SESSION['feedback_message']);
-                unset($_SESSION['feedback_type']);
-            }
-            ?>
+            <?php if (isset($_GET['message'])): ?>
+
+                <div class="success-message">Thank you! Your feedback has been received.</div>
+
+                <div class="feedback-submitted-box" style="background-color: #2c2c38; padding: 1rem; border-radius: 5px; margin: 2rem 0;">
+                    <h3>Your submitted message:</h3>
+                    <p>
+                        <?php 
+                            echo $_GET['message']; 
+                        ?>
+                    </p>
+                </div>
+            <?php endif; ?>
 
             <div class="support-section">
                 <h2>Frequently Asked Questions (FAQ)</h2>
@@ -98,10 +103,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         <span class="close-button" id="closeGiveFeedbackModal">&times;</span>
         <h2>Hello,<?php echo htmlspecialchars($_SESSION['username']); ?>! Give us feedback or report</h2>
         <p></p>
-        <form id="feedbackForm" action="submit_feedback.php" method="POST">
+        <form id="feedbackForm" action="support.php" method="GET">
             <textarea id="feedback_message" name="message" rows="5" required placeholder="Tulis pesan di sini..."></textarea>
             <button type="submit" class="send-button">Send!</button>
         </form>
+
     </div>
 </div>
 
