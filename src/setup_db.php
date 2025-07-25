@@ -41,7 +41,7 @@ if(mysqli_query($conn, $sql_create_courses)){
 
 $result_users = mysqli_query($conn, "SELECT COUNT(*) FROM users");
 if (mysqli_fetch_array($result_users)[0] == 0) {
-    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('admin', '1avc4ffj0eq4qzva'), ('diozahwan', 'nxhqu1bm4uj4a'), ('ucup', '1av4xhahphcl4x')");
+    mysqli_query($conn, "INSERT INTO users (username, password) VALUES ('admin', '1avc4ffj0eq4qzva', 'Aku adalah admin'), ('diozahwan', 'nxhqu1bm4uj4a', 'Aku raja cybersec'), ('ucup', '1av4xhahphcl4x', 'Aku orang paling ganteng') ('idol', 219jiamcxcdfads', 'FLAG:WebSec{ma@f_id0ruuu_k4l1an_b4ru_b4ngun_n1h}'");
     echo "Data awal untuk 'users' berhasil ditambahkan.<br>";
 }
 
