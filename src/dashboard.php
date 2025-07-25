@@ -11,6 +11,7 @@ if($conn === false){
 }
 
 session_start();
+
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
@@ -36,7 +37,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <nav class="sidebar-nav">
             <a href="#">Dashboard</a>
             <a href="#">My Courses</a>
-            <a href="#">My Profile</a>
+            <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
             <a href="#">Settings</a>
             <a href="support.php">Support</a>
             <a href="logout.php">Logout</a>
