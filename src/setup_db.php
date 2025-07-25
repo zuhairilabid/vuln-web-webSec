@@ -22,7 +22,8 @@ mysqli_select_db($conn, DB_NAME);
 $sql_create_users = "CREATE TABLE IF NOT EXISTS users (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    bio varchar(255)
 )";
 if(mysqli_query($conn, $sql_create_users)){
     echo "Tabel 'users' berhasil dibuat atau sudah ada.<br>";
