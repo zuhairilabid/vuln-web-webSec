@@ -1,10 +1,21 @@
 <?php
 session_start();
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+
+if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+    if (isset($_SESSION['can_see_flag']) && $_SESSION['can_see_flag'] === true) {
+        unset($_SESSION['can_see_flag']);
+
+    } else {
+        header("location: dashboard.php");
+        exit;
+    }
+
+} else {
     header("location: login.php");
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,10 +72,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 <body>
     <main class="main-content">
         <div class="container">
-            <h1>🎉 Selamat! Anda Menemukan Flag Rahasia! 🎉</h1>
-            <p>Ini adalah bagian kedua dari flag yang Anda cari:</p>
+            <h1>Selamat! Anda Menemukan Flag Rahasia!</h1>
+            <p>Ini adalah part 1 dari flag yang Anda cari:</p>
             <div class="flag-box">
-                WebSec{Gg_B4nG_
+                WebSec{G9_B4nG
             </div>
             <p style="margin-top: 20px;">Yeay berhasil, Tapi ini baru part1 flagnya. Coba gunakan Script lain.</p>
             <a href="support.php" class="back-link">Kembali ke Halaman Support</a>

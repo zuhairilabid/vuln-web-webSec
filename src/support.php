@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Memeriksa apakah pengguna sudah login, jika belum, arahkan ke halaman login
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
@@ -58,10 +57,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         <p>We're here to help you with any questions or issues you might have.</p>
 
         <?php
-        // Ambil pesan dari GET parameter tanpa sanitasi untuk tujuan CTF
         $receivedMessage = isset($_GET['message']) ? $_GET['message'] : '';
 
-        // Tampilkan pesan yang diterima (ini adalah titik kerentanan XSS)
         if (!empty($receivedMessage)): ?>
             <div class="success-message">Thank you! Your feedback has been received.</div>
             <div class="feedback-submitted-box" style="background-color: #2c2c38; padding: 1rem; border-radius: 5px; margin: 2rem 0;">
@@ -146,12 +143,14 @@ if (isset($_GET['message'])) {
     $xssTestMessage = $_GET['message']; 
 
     if (strpos($xssTestMessage, "<script>window.location.href='flag.php'</script>") !== false) {
+        $_SESSION['can_see_flag'] = true; 
+
         echo "<script>window.location.href='flag.php'</script>";
         exit();
     }
 
     else if (preg_match('/<script.*?>.*<\/script>/i', $xssTestMessage)) {
-        echo "<script>alert('_In1_Ud4H_K3t3mU}');</script>";
+        echo "<script>alert('Selamat nemu part 2: _In1_Ud4H_K3t3mU_fl@gny4}');</script>";
     }
 }
 ?>
