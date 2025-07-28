@@ -1,5 +1,6 @@
 <?php
 session_start();
+// Memeriksa apakah pengguna sudah login, jika belum, arahkan ke halaman login
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
@@ -43,7 +44,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     </div>
     <div class="header-right">
         <div class="profile">
-            <span>Welcome, <?php echo $_SESSION['username']; ?>!</span>
+            <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</span>
             <div class="profile-icon">
                 <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
             </div>
@@ -56,11 +57,16 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
         <h1>Support Center</h1>
         <p>We're here to help you with any questions or issues you might have.</p>
 
-        <?php if (isset($_GET['message'])): ?>
+        <?php
+        // Ambil pesan dari GET parameter tanpa sanitasi untuk tujuan CTF
+        $receivedMessage = isset($_GET['message']) ? $_GET['message'] : '';
+
+        // Tampilkan pesan yang diterima (ini adalah titik kerentanan XSS)
+        if (!empty($receivedMessage)): ?>
             <div class="success-message">Thank you! Your feedback has been received.</div>
             <div class="feedback-submitted-box" style="background-color: #2c2c38; padding: 1rem; border-radius: 5px; margin: 2rem 0;">
                 <h3>Your submitted message:</h3>
-                <p><?php echo $_GET['message']; ?></p>
+                <p><?php echo $receivedMessage; ?></p>
             </div>
         <?php endif; ?>
 
@@ -95,7 +101,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 <div id="giveFeedbackModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close-button" id="closeGiveFeedbackModal">&times;</span>
-        <h2>Hello, <?php echo $_SESSION['username']; ?>! Give us feedback or report</h2>
+        <h2>Hello, <?php echo htmlspecialchars($_SESSION['username']); ?>! Give us feedback or report</h2>
         <form id="feedbackForm" action="support.php" method="GET">
             <textarea id="feedback_message" name="message" rows="5" required placeholder="Tulis pesan di sini..."></textarea>
             <button type="submit" class="send-button">Send!</button>
@@ -136,8 +142,17 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php
-if (isset($_GET['message']) && preg_match('/<script.*?>.*<\/script>/i', $_GET['message'])) {
-    echo "<script>alert('WebSec{r3flect3d_XSS_h4s_f0und}');</script>";
+if (isset($_GET['message'])) {
+    $xssTestMessage = $_GET['message']; 
+
+    if (strpos($xssTestMessage, "<script>window.location.href='flag.php'</script>") !== false) {
+        echo "<script>window.location.href='flag.php'</script>";
+        exit();
+    }
+
+    else if (preg_match('/<script.*?>.*<\/script>/i', $xssTestMessage)) {
+        echo "<script>alert('_In1_Ud4H_K3t3mU}');</script>";
+    }
 }
 ?>
 
