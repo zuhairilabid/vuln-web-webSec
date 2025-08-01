@@ -1,9 +1,147 @@
-
 <?php
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
+}
+
+// CTF Challenge: Hidden Knowledge - LFI + Command Injection
+// Flag hidden in a separate file
+$flag = "WebSec{gl000ry_gl000ry_k5m_cyb3333333r_uuuuPPnNnnVVVVVjj}";
+
+// Create files in a cross-platform way
+$temp_dir = sys_get_temp_dir();
+$flag_file = $temp_dir . DIRECTORY_SEPARATOR . 'LeFlag.txt';
+$notes_file = $temp_dir . DIRECTORY_SEPARATOR . 'admin_notes.txt';
+
+file_put_contents($flag_file, $flag);
+file_put_contents($notes_file, "Hucucruh je sxusa jxu iushuj teskcudjqjyed yd BuVbqw.jnj");
+
+// Also create in current directory as backup
+file_put_contents('LeFlag.txt', $flag);
+file_put_contents('admin_notes.txt', "Hucucruh je sxusa jxu iushuj teskcudjqjyed yd BuVbqw.jnj");
+
+// Handle enhanced LFI challenge through lesson parameter
+$lfi_content = "";
+if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
+    $requested_file = $_GET['lesson'];
+    
+    // Enhanced LFI Vulnerability with Command Simulation
+    $output = "";
+    $is_command = false;
+    
+    // Simulate command execution for CTF purposes (cross-platform compatible)
+    function simulate_command($command, $args = '') {
+        $current_dir = getcwd();
+        $files = array(
+            'LeFlag.txt' => 'WebSec{gl000ry_gl000ry_k5m_cyb3333333r_uuuuPPnNnnVVVVVjj}',
+            'admin_notes.txt' => 'Hucucruh je sxusa jxu iushuj teskcudjqjyed yd BuVbqw.jnj',
+        );
+        
+        switch ($command) {
+            case 'cat':
+                if (empty($args)) {
+                    return "cat: missing file operand\nTry: cat filename.txt";
+                }
+                if (isset($files[$args])) {
+                    return $files[$args];
+                } elseif (file_exists($args)) {
+                    return file_get_contents($args);
+                } else {
+                    return "cat: $args: No such file or directory";
+                }
+                
+            case 'ls':
+                return "Permission denied: Please try another method";
+                
+            case 'pwd':
+                return 'Permission denied: Please try another method';
+                
+            case 'whoami':
+                return 'Permission denied: Please try another method';
+                
+            case 'id':
+                return 'Permission denied: Please try another method';
+                
+            case 'uname':
+                return 'Permission denied: Please try another method';
+                
+            case 'ps':
+                return 'Permission denied: Please try another method';
+                
+            case 'netstat':
+                return 'Permission denied: Please try another method';
+                
+            default:
+                return "Command '$command' not found";
+        }
+    }
+    
+    // Check if it's a command injection attempt with pipes
+    if (strpos($requested_file, '|') !== false) {
+        $is_command = true;
+        $parts = explode('|', $requested_file);
+        $base_command_full = trim($parts[0]);
+        
+        // Parse base command
+        if (preg_match('/^(cat|ls|pwd|whoami|id|uname|ps|netstat)\s*(.*)$/', $base_command_full, $matches)) {
+            $base_command = $matches[1];
+            $base_args = trim($matches[2]);
+            $output = simulate_command($base_command, $base_args);
+            
+            // Process pipe commands
+            for ($i = 1; $i < count($parts); $i++) {
+                $pipe_cmd = trim($parts[$i]);
+                if (strpos($pipe_cmd, 'grep') === 0) {
+                    $grep_pattern = trim(str_replace('grep', '', $pipe_cmd));
+                    $grep_pattern = trim($grep_pattern, '"\'');
+                    
+                    $lines = explode("\n", $output);
+                    $filtered_lines = array();
+                    foreach ($lines as $line) {
+                        if (stripos($line, $grep_pattern) !== false) {
+                            $filtered_lines[] = $line;
+                        }
+                    }
+                    $output = implode("\n", $filtered_lines);
+                }
+            }
+        } else {
+            $output = "Command not recognized: " . $base_command_full;
+        }
+    } elseif (preg_match('/^(cat|ls|pwd|whoami|id|uname|ps|netstat)\s*(.*)$/', $requested_file, $matches)) {
+        // Handle direct Linux commands
+        $is_command = true;
+        $command = $matches[1];
+        $args = trim($matches[2]);
+        $output = simulate_command($command, $args);
+    } else {
+        // Traditional file inclusion
+        if (file_exists($requested_file)) {
+            $output = file_get_contents($requested_file);
+        } else {
+            $output = "File not found: " . $requested_file;
+        }
+    }
+    
+    if (!empty($output) || $is_command) {
+        $lfi_content = "<div style='position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.95); color: #00ff00; padding: 15px; border-radius: 8px; z-index: 9999; max-width: 500px; font-family: monospace; font-size: 12px; max-height: 80vh; overflow-y: auto;'>";
+        
+        if ($is_command) {
+            $lfi_content .= "<div style='color: #ff6b6b; margin-bottom: 10px;'>⚠️ CRITICAL: Command injection detected!</div>";
+            $lfi_content .= "<div style='color: #ffc107; margin-bottom: 5px;'>Command: " . htmlspecialchars($requested_file) . "</div>";
+        } else {
+            $lfi_content .= "<div style='color: #ff6b6b; margin-bottom: 10px;'>⚠️ DEBUG: Unauthorized file access detected!</div>";
+            $lfi_content .= "<div style='color: #ffc107; margin-bottom: 5px;'>File: " . htmlspecialchars($requested_file) . "</div>";
+        }
+        
+        $lfi_content .= "<div style='background: rgba(0,0,0,0.8); padding: 10px; border-radius: 4px; margin: 10px 0;'>";
+        $lfi_content .= "<pre style='color: #00ff00; margin: 0; white-space: pre-wrap; font-size: 11px;'>" . htmlspecialchars($output) . "</pre>";
+        $lfi_content .= "</div>";
+        
+        $lfi_content .= "<div style='margin-top: 10px; font-size: 10px; color: #94a3b8;'>CTF Challenge: LFI + Command Injection</div>";
+        $lfi_content .= "</div>";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -122,9 +260,113 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             display: grid;
             gap: 15px;
         }
+
+        /* Help button styles */
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #38f2af;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 12px 20px;
+            z-index: 1000;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 500px;
+            color: #f8fafc;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #38f2af;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+        }
+
+        .close {
+            color: #94a3b8;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #f8fafc;
+        }
+
+        .modal-button {
+            background: #38f2af;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background: #2dd4aa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(56, 242, 175, 0.4);
+        }
+
+        /* Hint 3 */
+        /* Try changing the "?lesson" value */
+        
     </style>
 </head>
 <body>
+    <?php echo $lfi_content; ?>
+    
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <button class="close-btn" id="close-btn">&times;</button>
@@ -165,10 +407,36 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     ← Back to Dashboard
                 </a>
             </div>
+            
+            <!-- Help Button -->
+            <a href="#" class="help-button" id="helpButton">
+                Need Help ?
+            </a>
+            
+            <!-- Modal -->
+            <div id="helpModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeModal">&times;</span>
+                    <div class="modal-header">System Help</div>
+                    <div class="modal-message">
+                        If the lessons didn't show up, Try debug the web
+                    </div>
+                    <button class="modal-button" id="modalOkButton">OK</button>
+                </div>
+            </div>
             <div class="course-title">SQL Injection Mastery: Course Overview</div>
             <div class="course-desc">
                 This course offers a practical guide to SQL Injection vulnerabilities, covering how they function, identification methods, and crucially, prevention. 
                 Geared towards developers and security professionals, it emphasizes defensive programming and secure coding to protect web applications from this common threat.
+                
+                <?php if (isset($_GET['debug']) && $_GET['debug'] == 'true'): ?>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <div style="color: #ffc107; font-weight: bold; margin-bottom: 5px;">🔍 Debug Mode Enabled</div>
+                    <div style="color: #94a3b8; font-size: 0.9rem;">
+                        <strong>Hint 2:</strong> check the code structure<br>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
             <div class="course-selection">
                 <div class="lesson-container" data-lesson="1">
@@ -180,7 +448,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="lesson-description">
                             Learn the basics of SQL Injection attacks, including how they work, common attack vectors, and why they remain one of the most dangerous web vulnerabilities. This lesson covers the fundamental concepts, types of SQL injection, and real-world examples to help you understand the threat landscape.
                         </div>
-                        <button class="learn-button" onclick="return false;">Learn This Topic</button>
+                        <a href="?lesson=1" class="learn-button">Learn This Topic</a>
                     </div>
                 </div>
 
@@ -193,7 +461,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="lesson-description">
                             Master the techniques for identifying SQL injection vulnerabilities in web applications. This lesson covers manual testing methods, automated scanning tools, code review practices, and how to recognize vulnerable code patterns in different programming languages and frameworks.
                         </div>
-                        <button class="learn-button" onclick="return false;">Learn This Topic</button>
+                        <a href="?lesson=2" class="learn-button">Learn This Topic</a>
                     </div>
                 </div>
 
@@ -206,7 +474,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="lesson-description">
                             Explore comprehensive defense mechanisms against SQL injection attacks. This lesson covers parameterized queries, stored procedures, input validation, output encoding, and the principle of least privilege. Learn how to implement multiple layers of security to protect your applications.
                         </div>
-                        <button class="learn-button" onclick="return false;">Learn This Topic</button>
+                        <a href="?lesson=3" class="learn-button">Learn This Topic</a>
                     </div>
                 </div>
 
@@ -219,7 +487,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <div class="lesson-description">
                             Apply advanced prevention techniques and implement enterprise-level security measures. This lesson covers Web Application Firewalls (WAF), database security hardening, monitoring and logging strategies, and how to create a comprehensive security framework for production environments.
                         </div>
-                        <button class="learn-button" onclick="return false;">Learn This Topic</button>
+                        <a href="?lesson=4" class="learn-button">Learn This Topic</a>
                     </div>
                 </div>
             </div>
@@ -255,6 +523,50 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 container.classList.toggle('active');
             });
         });
+
+        // Additional informations
+        console.log('%c See the admin notes for more information');
+        console.log('%c Admin Notes can be found in admin_notes.txt');
+   
+
+        // Help modal functionality
+        const helpButton = document.getElementById('helpButton');
+        const helpModal = document.getElementById('helpModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalOkButton = document.getElementById('modalOkButton');
+
+        if (helpButton && helpModal) {
+            helpButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                helpModal.style.display = 'block';
+            });
+
+            function closeModalFunction() {
+                helpModal.style.display = 'none';
+            }
+
+            if (closeModal) {
+                closeModal.addEventListener('click', closeModalFunction);
+            }
+
+            if (modalOkButton) {
+                modalOkButton.addEventListener('click', closeModalFunction);
+            }
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === helpModal) {
+                    closeModalFunction();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && helpModal.style.display === 'block') {
+                    closeModalFunction();
+                }
+            });
+        }
     });
     </script>
 </body>
