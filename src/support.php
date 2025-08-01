@@ -25,7 +25,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     <nav class="sidebar-nav">
         <a href="dashboard.php">Dashboard</a>
         <a href="#">My Courses</a>
-        <a href="profile.php">My Profile</a>
+        <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
         <a href="#">Settings</a>
         <a href="support.php" class="active">Support</a>
         <a href="logout.php">Logout</a>
