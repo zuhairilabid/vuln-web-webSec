@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: /src/tambahan.html
+Disallow: /src/file_ini_tidak_penting.html
