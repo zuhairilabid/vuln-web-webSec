@@ -45,6 +45,28 @@ if (!$database_exists) {
     if(mysqli_query($conn, $sql_create_courses)){
         echo "Tabel 'courses' berhasil dibuat.<br>";
     } else { die("Gagal buat tabel courses: " . mysqli_error($conn)); }
+    
+    $sql_create_user_courses = "CREATE TABLE user_courses (
+        user_id INT NOT NULL,
+        course_id INT NOT NULL,
+        PRIMARY KEY (user_id, course_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+    )";
+    if(mysqli_query($conn, $sql_create_user_courses)){
+        echo "Tabel 'user_courses' berhasil dibuat.<br>";
+    } else { die("Gagal buat tabel user_courses: " . mysqli_error($conn)); }
+
+    $sql_create_lessons = "CREATE TABLE lessons (
+        id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        course_id INT NOT NULL,
+        title VARCHAR(100) NOT NULL,
+        description TEXT,
+        FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+    )";
+    if(mysqli_query($conn, $sql_create_lessons)){
+        echo "Tabel 'lessons' berhasil dibuat.<br>";
+    } else { die("Gagal buat tabel lessons: " . mysqli_error($conn)); }
 
     $insert_users_sql = "INSERT INTO users (username, password, bio) VALUES 
         ('admin', '1avc4ffj0eq4qzva', 'Aku adalah admin'), 
@@ -67,14 +89,23 @@ if (!$database_exists) {
         echo "Gagal menambahkan data awal untuk 'courses': " . mysqli_error($conn) . "<br>";
     }
 
+    $insert_lessons_sql = "INSERT INTO lessons (course_id, title, description) VALUES
+        (1, 'Lesson 1: SQL Injection Fundamentals', 'Learn the basics of SQL Injection attacks, including how they work, common attack vectors, and why they remain one of the most dangerous web vulnerabilities. This lesson covers the fundamental concepts, types of SQL injection, and real-world examples to help you understand the threat landscape.'),
+        (1, 'Lesson 2: Detecting SQL Injection Vulnerabilities', 'Master the techniques for identifying SQL injection vulnerabilities in web applications. This lesson covers manual testing methods, automated scanning tools, code review practices, and how to recognize vulnerable code patterns in different programming languages and frameworks.'),
+        (1, 'Lesson 3: Defensive Strategies for SQLi', 'Explore comprehensive defense mechanisms against SQL injection attacks. This lesson covers parameterized queries, stored procedures, input validation, output encoding, and the principle of least privilege. Learn how to implement multiple layers of security to protect your applications.'),
+        (1, 'Lesson 4: Practical Prevention and Advanced Mitigation Techniques', 'Apply advanced prevention techniques and implement enterprise-level security measures. This lesson covers Web Application Firewalls (WAF), database security hardening, monitoring and logging strategies, and how to create a comprehensive security framework for production environments.')";
+    if(mysqli_query($conn, $insert_lessons_sql)) {
+        echo "Data awal untuk 'lessons' berhasil ditambahkan.<br>";
+    } else {
+        echo "Gagal menambahkan data awal untuk 'lessons': " . mysqli_error($conn) . "<br>";
+    }
+
     echo "<h3>Setup selesai! Halaman akan di-refresh dalam 3 detik...</h3>";
     echo "<script>setTimeout(() => { window.location.href = window.location.href; }, 3000);</script>";
     echo "</div>";
     
-
     die(); 
 }
 
 mysqli_select_db($conn, DB_NAME);
-
 ?>
