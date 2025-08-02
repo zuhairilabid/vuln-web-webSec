@@ -172,6 +172,8 @@ $legacy_hash_from_db = '97d76fe3211836509af8315b2f2900b4';
             <div class="card-box">
                 <div class="legacy-header">
                     <h2 style="margin: 0;">Legacy System Security Notes</h2>
+                    <a href="download.php?file=legacy_notes.txt" class="download-link">Download Notes</a>
+
                 </div>
                 <p>This information is for developers only and details our old, insecure hashing method. It is intentionally left here for backward compatibility and is part of a security challenge. You will need this to solve the verification above.</p>
                 <div class="detail-item">
