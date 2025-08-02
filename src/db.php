@@ -59,7 +59,8 @@ if (!$database_exists) {
 
     $insert_courses_sql = "INSERT INTO courses (title, description, link) VALUES 
         ('SQL Injection Mastery', 'Learn to find and exploit SQLi vulnerabilities from scratch.', '#'),
-        ('XSS for Pentesters', 'Master the art of Cross-Site Scripting in modern web apps.', '#')";
+        ('XSS for Pentesters', 'Master the art of Cross-Site Scripting in modern web apps.', '#'),
+        ('Client-Side Security [PREMIUM]', 'An exclusive module on the dangers of client-side validation and how to bypass poorly implemented controls.', '#')";
     if(mysqli_query($conn, $insert_courses_sql)) {
         echo "Data awal untuk 'courses' berhasil ditambahkan.<br>";
     } else {

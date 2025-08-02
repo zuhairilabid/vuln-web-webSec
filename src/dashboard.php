@@ -69,32 +69,28 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     </div>
                 <?php endif; ?>
             
-           <div class="course-grid">
+            <div class="course-grid">
                 <?php
                 $sql = "SELECT title, description, link FROM courses";
                 $result = mysqli_query($conn, $sql);
 
-                if (mysqli_num_rows($result) > 0) {
-                     while($row = mysqli_fetch_assoc($result)) {
-                        echo '<div class="course-card">';
-                        echo '    <div class="card-header">' . htmlspecialchars($row["title"]) . '</div>';
-                        echo '    <div class="card-body">' . htmlspecialchars($row["description"]) . '</div>';
-                        
-                        $courseLink = $row["link"];
-                        
-                        if (stripos($row["title"], 'SQL Injection') !== false || stripos($row["title"], 'SQLi') !== false) {
-                             $courseLink = 'sqli_course.php';
-                            }
-                        elseif (stripos($row["title"], 'XSS') !== false || stripos($row["title"], 'Cross-Site Scripting') !== false || stripos($row["title"], 'XSS for PENTESTERS') !== false) {
-                             $courseLink = 'xss_course.php';
-                            }
-                        
-                        echo '    <div class="card-footer"><a href="' . htmlspecialchars($courseLink) . '" class="btn">View Course</a></div>';
-                        echo '</div>';
-                    }
-                } else {
+                if (mysqli_num_rows($result) > 0):
+                    while($row = mysqli_fetch_assoc($result)):
+                ?>
+                
+                <div class="course-card">
+                    <div class="card-header"><?= htmlspecialchars($row["title"]) ?></div>
+                    <div class="card-body"><?= htmlspecialchars($row["description"]) ?></div>
+                    <div class="card-footer">
+                        <a href="<?= htmlspecialchars($row["link"]) ?>" class="btn">View Course</a>
+                    </div>
+                </div>
+
+                <?php 
+                    endwhile;
+                else:
                     echo "<p>Belum ada course yang tersedia saat ini.</p>";
-                }
+                endif; 
                 ?>
             </div>
         </div>
