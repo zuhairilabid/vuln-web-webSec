@@ -4,12 +4,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-
-// CTF Challenge: Hidden Knowledge - LFI + Command Injection
-// Flag hidden in a separate file
 $flag = "WebSec{gl000ry_gl000ry_k5m_cyb3333333r_uuuuPPnNnnVVVVVjj}";
 
-// Create files in a cross-platform way
 $temp_dir = sys_get_temp_dir();
 $flag_file = $temp_dir . DIRECTORY_SEPARATOR . 'LeFlag.txt';
 $notes_file = $temp_dir . DIRECTORY_SEPARATOR . 'admin_notes.txt';
@@ -17,20 +13,16 @@ $notes_file = $temp_dir . DIRECTORY_SEPARATOR . 'admin_notes.txt';
 file_put_contents($flag_file, $flag);
 file_put_contents($notes_file, "Hucucruh je sxusa jxu iushuj teskcudjqjyed yd BuVbqw.jnj");
 
-// Also create in current directory as backup
 file_put_contents('LeFlag.txt', $flag);
 file_put_contents('admin_notes.txt', "Hucucruh je sxusa jxu iushuj teskcudjqjyed yd BuVbqw.jnj");
 
-// Handle enhanced LFI challenge through lesson parameter
 $lfi_content = "";
 if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
     $requested_file = $_GET['lesson'];
     
-    // Enhanced LFI Vulnerability with Command Simulation
     $output = "";
     $is_command = false;
     
-    // Simulate command execution for CTF purposes (cross-platform compatible)
     function simulate_command($command, $args = '') {
         $current_dir = getcwd();
         $files = array(
@@ -77,19 +69,16 @@ if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
         }
     }
     
-    // Check if it's a command injection attempt with pipes
     if (strpos($requested_file, '|') !== false) {
         $is_command = true;
         $parts = explode('|', $requested_file);
         $base_command_full = trim($parts[0]);
         
-        // Parse base command
         if (preg_match('/^(cat|ls|pwd|whoami|id|uname|ps|netstat)\s*(.*)$/', $base_command_full, $matches)) {
             $base_command = $matches[1];
             $base_args = trim($matches[2]);
             $output = simulate_command($base_command, $base_args);
             
-            // Process pipe commands
             for ($i = 1; $i < count($parts); $i++) {
                 $pipe_cmd = trim($parts[$i]);
                 if (strpos($pipe_cmd, 'grep') === 0) {
@@ -110,13 +99,11 @@ if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
             $output = "Command not recognized: " . $base_command_full;
         }
     } elseif (preg_match('/^(cat|ls|pwd|whoami|id|uname|ps|netstat)\s*(.*)$/', $requested_file, $matches)) {
-        // Handle direct Linux commands
         $is_command = true;
         $command = $matches[1];
         $args = trim($matches[2]);
         $output = simulate_command($command, $args);
     } else {
-        // Traditional file inclusion
         if (file_exists($requested_file)) {
             $output = file_get_contents($requested_file);
         } else {
