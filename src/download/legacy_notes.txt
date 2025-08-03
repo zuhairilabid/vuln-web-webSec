@@ -1,0 +1,10 @@
+Legacy System Developer Notes
+==============================
+
+This file contains critical information about our old authentication system.
+
+Legacy Hash: 97d76fe3211836509af8315b2f2900b4
+Algorithm: MD5
+Vulnerability Hint: The original data for this hash is a very common 4-digit numeric PIN.
+
+Please ensure this information is not publicly accessible. We are in the process of migrating away from this insecure system.
