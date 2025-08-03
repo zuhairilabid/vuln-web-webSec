@@ -7,8 +7,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-
-?>
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +27,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         </div>
         <nav class="sidebar-nav">
             <a href="#">Dashboard</a>
-            <a href="#">My Courses</a>
+            <a href="my_courses.php">My Courses</a> 
             <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
             <a href="settings.php">Settings</a>
             <a href="support.php">Support</a>
@@ -71,7 +69,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             
             <div class="course-grid">
                 <?php
-                $sql = "SELECT title, description, link FROM courses";
+                $sql = "SELECT id, title, description, link FROM courses";
                 $result = mysqli_query($conn, $sql);
 
                 if (mysqli_num_rows($result) > 0):
@@ -83,6 +81,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <div class="card-body"><?= htmlspecialchars($row["description"]) ?></div>
                     <div class="card-footer">
                         <a href="<?= htmlspecialchars($row["link"]) ?>" class="btn">View Course</a>
+                        <button class="btn btn-save" onclick="saveCourse(<?= $row['id'] ?>)">Simpan</button>
                     </div>
                 </div>
 
@@ -111,11 +110,27 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             closeBtn.addEventListener('click', toggleSidebar);
         }
     });
+
+    function saveCourse(courseId) {
+        fetch('save_course.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'course_id=' + courseId
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
     </script>
 
 </body>
 </html>
 <?php
-// Tutup koneksi database
 mysqli_close($conn);
 ?>
