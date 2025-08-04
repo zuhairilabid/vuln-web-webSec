@@ -1,8 +1,8 @@
 <?php
-define('DB_SERVER', getenv("MYSQL_HOST") ?: 'db');
-define('DB_USERNAME', getenv("MYSQL_USER") ?: 'userku');
-define('DB_PASSWORD', getenv("MYSQL_PASSWORD") ?: 'passku');
-define('DB_NAME', getenv("MYSQL_DATABASE") ?: 'vul_db');
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'vul_db');
 
 $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
 
@@ -11,7 +11,7 @@ if($conn === false){
 }
 
 $db_check_query = mysqli_query($conn, "SHOW DATABASES LIKE '" . DB_NAME . "'");
-$database_exists = mysqli_num_rows($db_check_query) > 0;
+$database_exists = mysqli_num_rows($db_check    _query) > 0;
 
 if (!$database_exists) {
     
