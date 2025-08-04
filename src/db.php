@@ -11,7 +11,7 @@ if($conn === false){
 }
 
 $db_check_query = mysqli_query($conn, "SHOW DATABASES LIKE '" . DB_NAME . "'");
-$database_exists = mysqli_num_rows($db_check    _query) > 0;
+$database_exists = mysqli_num_rows($db_check_query) > 0;
 
 if (!$database_exists) {
     
