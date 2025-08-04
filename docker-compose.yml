@@ -18,7 +18,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: inipasswordaman 
-      MYSQL_DATABASE: vul_db 
+      MYSQL_DATABASE: vul_db  
     volumes:
       - db_data:/var/lib/mysql
 
