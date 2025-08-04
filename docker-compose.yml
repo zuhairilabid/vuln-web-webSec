@@ -3,29 +3,24 @@ version: '3.8'
 services:
   web:
     build: .
-    container_name: php-web
     ports:
       - "2222:80"
-    volumes:
-      - .:/var/www/html
-    env_file:
-      - .env
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=inipasswordaman
+      - DB_NAME=vul_db
     depends_on:
       - db
-
+    restart: always
   db:
-    image: mysql:5.7
-    container_name: mysql-db
+    image: mariadb:10.6 
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: inipasswordaman 
+      MYSQL_DATABASE: vul_db 
     volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+      - db_data:/var/lib/mysql
 
 volumes:
-  mysql_data:
+  db_data:
