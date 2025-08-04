@@ -32,10 +32,37 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 </head>
 <body>
     <aside class="sidebar" id="sidebar">
-        </aside>
+        <div class="sidebar-header">
+            <button class="close-btn" id="close-btn">&times;</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.php">Dashboard</a>
+            <a href="my_courses.php">My Courses</a>
+            <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
+            <a href="settings.php">Settings</a>
+            <a href="support.php">Support</a>
+            <a href="logout.php">Logout</a>
+        </nav>
+    </aside>
+
     <header class="header">
-        </header>
-    
+        <div class="header-left">
+            <button class="hamburger-btn" id="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="dashboard.php" class="logo">CyberCourse</a>
+        </div>
+        <div class="header-right">
+            <div class="profile">
+                <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                <div class="profile-icon">
+                    <?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?>
+                </div>
+            </div>
+        </div>
+    </header>
     <main class="main-content">
         <div class="course-container">
             <div style="margin-bottom: 20px;">

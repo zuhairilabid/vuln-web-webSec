@@ -360,9 +360,9 @@ if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
         </div>
         <nav class="sidebar-nav">
             <a href="dashboard.php">Dashboard</a>
-            <a href="#">My Courses</a>
+            <a href="my_courses.php">My Courses</a>
             <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
-            <a href="#">Settings</a>
+            <a href="settings.php">Settings</a>
             <a href="support.php">Support</a>
             <a href="logout.php">Logout</a>
         </nav>

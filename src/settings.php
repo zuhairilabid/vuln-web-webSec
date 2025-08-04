@@ -6,8 +6,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-// Data hash statis sesuai permintaan Anda
 $legacy_hash_from_db = '97d76fe3211836509af8315b2f2900b4';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,7 +105,7 @@ $legacy_hash_from_db = '97d76fe3211836509af8315b2f2900b4';
         </div>
         <nav class="sidebar-nav">
             <a href="dashboard.php">Dashboard</a>
-            <a href="#">My Courses</a>
+            <a href="my_courses.php">My Courses</a>
             <a href="profile.php?user_id=<?php echo htmlspecialchars($_SESSION['user_id']); ?>">My Profile</a>
             <a href="settings.php" class="active">Settings</a>
             <a href="support.php">Support</a>
