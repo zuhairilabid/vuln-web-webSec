@@ -346,10 +346,7 @@ if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
             box-shadow: 0 4px 15px rgba(56, 242, 175, 0.4);
         }
 
-        /* Hint 3 */
-        /* Try changing the "?lesson" value */
-        
-    </style>
+</style>
 </head>
 <body>
     <?php echo $lfi_content; ?>
