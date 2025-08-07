@@ -2,22 +2,17 @@
 session_start();
 require_once "db.php";
 
-// CSRF ATTACK HANDLER - BYPASS SESSION CHECK FOR CSRF ATTACK
 if (isset($_GET['update_bio'])) {
     $profile_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
     $new_bio = mysqli_real_escape_string($conn, $_GET['bio']);
     
-    // Check if this is a CSRF attack (simple detection based on referer)
     $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
     $current_host = $_SERVER['HTTP_HOST'];
     
-    // If referer is empty or from different domain, it might be CSRF
     if (empty($referer) || strpos($referer, $current_host) === false) {
         $is_csrf_detected = true;
-        // Set flag as bio content when CSRF detected
         $new_bio = "WebSec{🐐🐐🐐🐐🐐🐐🐐🐐🐐🐐🐐🐐}";
         
-        // Update bio in database
         $sql = "UPDATE users SET bio = ? WHERE id = ?";
         if ($stmt = mysqli_prepare($conn, $sql)) {
             mysqli_stmt_bind_param($stmt, "si", $new_bio, $profile_id);
@@ -25,7 +20,6 @@ if (isset($_GET['update_bio'])) {
             mysqli_stmt_close($stmt);
         }
         
-        // Return simple response for CSRF attack
         echo "<h1>CSRF Attack Detected!</h1>";
         echo "<p>Flag has been set in user bio.</p>";
         echo "<p><a href='profile.php?user_id={$profile_id}'>View Profile</a></p>";
@@ -33,7 +27,6 @@ if (isset($_GET['update_bio'])) {
     }
 }
 
-// NORMAL SESSION CHECK FOR NON-CSRF REQUESTS
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
@@ -71,7 +64,6 @@ if (isset($_GET['update_bio']) && isset($_SESSION["loggedin"])) {
     }
 }
 
-// Get user data
 $sql = "SELECT username, bio FROM users WHERE id = ?";
 $user_data = [];
 
@@ -88,7 +80,6 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_close($stmt);
 }
 
-// Check if current user can edit this profile
 $can_edit = ($_SESSION['user_id'] == $profile_id) || ($_SESSION['username'] === 'admin');
 ?>
 
@@ -113,6 +104,7 @@ $can_edit = ($_SESSION['user_id'] == $profile_id) || ($_SESSION['username'] === 
                     <h2><?= htmlspecialchars($user_data['username']); ?></h2>
                 </div>
 
+                <!-- Display messages -->
                 <?php if (!empty($message)): ?>
                     <div class="alert <?= $is_csrf_detected ? 'alert-flag' : 'alert-success'; ?>">
                         <?= htmlspecialchars($message); ?>

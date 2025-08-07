@@ -14,10 +14,10 @@ services:
       - db
     restart: always
   db:
-    image: mariadb:10.6 
+    image: mariadb:10.6
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: inipasswordaman 
+      MYSQL_ROOT_PASSWORD: inipasswordaman
     volumes:
       - db_data:/var/lib/mysql
 
