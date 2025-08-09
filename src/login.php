@@ -13,8 +13,8 @@ $loginrr = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    $username = mysqli_real_escape_string($conn, $_POST["username"]); // added an escape to make sure the input is read as plain text
+    $password = mysqli_real_escape_string($conn, $_POST["password"]);
 
     if(empty($username) || empty($password)){
         $loginrr = "Invalid credentials.";

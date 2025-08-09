@@ -18,7 +18,7 @@ file_put_contents('admin_notes.txt', "Hucucruh je sxusa jxu iushuj teskcudjqjyed
 
 $lfi_content = "";
 if (isset($_GET['lesson']) && !is_numeric($_GET['lesson'])) {
-    $requested_file = $_GET['lesson'];
+    $requested_file = $_GET['lesson']; 
     
     $output = "";
     $is_command = false;

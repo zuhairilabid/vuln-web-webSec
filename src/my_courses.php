@@ -20,7 +20,7 @@ if (isset($_GET['search'])) {
     $template = "Hasil pencarian untuk: " . $search_query;
     
     ob_start();
-    eval("?><h1>" . $template . "</h1><?php ");
+    eval("?><h1>" . htmlspecialchars($template) . "</h1><?php "); // menambahkan htmlspecialchars untuk mencegah injeksi html
     $search_output = ob_get_clean();
     
     $sql_where_clause = " AND c.title LIKE ?";

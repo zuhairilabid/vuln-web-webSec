@@ -63,7 +63,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
             <div class="success-message">Thank you! Your feedback has been received.</div>
             <div class="feedback-submitted-box" style="background-color: #2c2c38; padding: 1rem; border-radius: 5px; margin: 2rem 0;">
                 <h3>Your submitted message:</h3>
-                <p><?php echo $receivedMessage; ?></p>
+                <p><?php echo htmlspecialchars($receivedMessage); ?></p>  
             </div>
         <?php endif; ?>
 
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 if (isset($_GET['message'])) {
-    $xssTestMessage = $_GET['message']; 
+    $xssTestMessage = htmlspecialchars($_GET['message']); // idk how to fix ts without adding htmlspecialchars here
 
     if (strpos($xssTestMessage, "<script>window.location.href='flag.php'</script>") !== false) {
         $_SESSION['can_see_flag'] = true; 

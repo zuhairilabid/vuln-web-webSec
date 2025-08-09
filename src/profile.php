@@ -32,7 +32,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-$profile_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+$profile_id = $_SESSION['user_id'] ?? 0; // ganti user_id agar didapatkan dari session dan bukan url
 
 if ($profile_id === 0) {
     die("User ID not specified.");
